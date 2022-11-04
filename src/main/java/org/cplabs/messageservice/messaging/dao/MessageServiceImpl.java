@@ -1,4 +1,4 @@
-package org.cplabs.messageservice.messaging;
+package org.cplabs.messageservice.messaging.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -38,6 +38,18 @@ class MessageServiceImpl implements MessageService {
         final Root<Message> message = cq.from( Message.class );
         final List<Predicate> predicates = new ArrayList<>();
         predicates.add( cb.equal(message.get("to_alias"), alias));
+        cq.where(predicates.toArray(new Predicate[0]));
+
+        return em.createQuery(cq).getResultList();
+    }
+
+    public List<Message> getMessageForChannel(@NonNull final String channel) {
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+        final CriteriaQuery<Message> cq = cb.createQuery(Message.class);
+
+        final Root<Message> message = cq.from( Message.class );
+        final List<Predicate> predicates = new ArrayList<>();
+        predicates.add( cb.equal(message.get("to_channel"), channel));
         cq.where(predicates.toArray(new Predicate[0]));
 
         return em.createQuery(cq).getResultList();

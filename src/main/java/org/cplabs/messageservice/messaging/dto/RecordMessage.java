@@ -1,5 +1,6 @@
-package org.cplabs.messageservice.messaging;
+package org.cplabs.messageservice.messaging.dto;
 
+import org.cplabs.messageservice.messaging.dao.Message;
 import org.springframework.lang.Nullable;
 import java.util.Date;
 
@@ -12,12 +13,16 @@ import java.util.Date;
  * @param to label or name of who this message is to
  * @param message message content
  */
-record RecordMessage(@Nullable String date, @Nullable String from, @Nullable String to,  @Nullable String message ) {
+public record RecordMessage(@Nullable String date, String channel, @Nullable String from, @Nullable String to,  @Nullable String message ) {
 
     // Factory method: to automatically manage the Date field when message record type is created
     // Note: probably not thread safe without synchronization
     synchronized static public RecordMessage createNewMessageFor(@Nullable String from, @Nullable String to, @Nullable String message) {
-        return new RecordMessage( new Date().toString(), from, to, message );
+        return new RecordMessage( new Date().toString(), null, from, to, message );
+    }
+
+    synchronized static public RecordMessage createNewMessageFor(@Nullable String channel, @Nullable String from, @Nullable String to, @Nullable String message) {
+        return new RecordMessage( new Date().toString(), channel, from, to, message );
     }
 
     // Factory method: to transfer data from RecordMessage (presentation layer) to Message (repository layer)
@@ -35,6 +40,6 @@ record RecordMessage(@Nullable String date, @Nullable String from, @Nullable Str
     // Notes: type Record not directly supported by JPA
     // Note: probably not thread safe without synchronization
     synchronized static public RecordMessage messageFrom (@Nullable Message message) {
-        return new RecordMessage( message.getDateTimeSent(), message.getFrom_alias(), message.getTo_alias(), message.getMessage() );
+        return new RecordMessage( message.getDateTimeSent(), message.getTo_channel(), message.getFrom_alias(), message.getTo_alias(), message.getMessage() );
     }
 }

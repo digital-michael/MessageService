@@ -1,5 +1,6 @@
 package org.cplabs.messageservice.messaging;
 
+import org.cplabs.messageservice.messaging.dto.RecordMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,11 @@ class MessageController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // RESTful endpoint calling business logic
+    @PostMapping( value = "/messages/{channel}/{from}/{to}")
+    public ResponseEntity createNewMessageFor(@NonNull @PathVariable String channel, @NonNull @PathVariable String from, @NonNull @PathVariable String to, @NonNull @RequestBody String message ) {
+        messageManager.recordNewMessageFor(channel, from, to, message);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

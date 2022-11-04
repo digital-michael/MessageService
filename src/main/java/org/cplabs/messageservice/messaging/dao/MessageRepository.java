@@ -1,4 +1,4 @@
-package org.cplabs.messageservice.messaging;
+package org.cplabs.messageservice.messaging.dao;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;

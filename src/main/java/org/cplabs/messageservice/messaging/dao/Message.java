@@ -1,4 +1,4 @@
-package org.cplabs.messageservice.messaging;
+package org.cplabs.messageservice.messaging.dao;
 
 import org.springframework.lang.NonNull;
 
@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity(name = "Messages")
-class Message {
+public class Message {
 
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO)
@@ -18,11 +18,15 @@ class Message {
     private String dateTimeSent;
     private String from_alias;
     private String to_alias;
+
+    private String to_channel;
     private String message;
 
     public Message() {
 
     }
+
+
     public Message(@NonNull final String from, @NonNull final String to, @NonNull final String message) {
         this.dateTimeSent = new Date().toString();
         this.from_alias = from;
@@ -30,6 +34,13 @@ class Message {
         this.message = message;
     }
 
+    public Message(@NonNull final String to_channel, @NonNull final String from, @NonNull final String to, @NonNull final String message) {
+        this.dateTimeSent = new Date().toString();
+        this.from_alias = from;
+        this.to_alias = to;
+        this.to_channel = to_channel;
+        this.message = message;
+    }
 
     public long getMessageId() {
         return messageId;
@@ -69,5 +80,9 @@ class Message {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTo_channel() {
+        return to_channel;
     }
 }

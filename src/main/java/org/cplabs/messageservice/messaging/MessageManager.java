@@ -1,14 +1,14 @@
 package org.cplabs.messageservice.messaging;
 
+import org.cplabs.messageservice.messaging.dao.Message;
+import org.cplabs.messageservice.messaging.dao.MessageService;
+import org.cplabs.messageservice.messaging.dto.RecordMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +41,7 @@ public class MessageManager {
     //
 
     // Business logic
-    List<RecordMessage> getAllMessages() {
+    public List<RecordMessage> getAllMessages() {
         final List<RecordMessage> results = new ArrayList<>();
         messageService.getAllMessages()
                 .forEach( m -> results.add( RecordMessage.messageFrom(m)));
@@ -49,14 +49,26 @@ public class MessageManager {
     }
 
     // Business logic
-    List<RecordMessage> getMessageFor( final String alias ) {
+    public List<RecordMessage> getMessageFor( final String alias ) {
        return messageService.getMessageFor(alias)
                .stream().map( m -> RecordMessage.messageFrom(m))
                .collect(Collectors.toList());
     }
 
     // Business logic
-    void recordNewMessageFor(@NonNull final String from, @NonNull final String to, @NonNull final String message ) {
-        messageService.save( new Message( from, to, message ) );
+    public void recordNewMessageFor(@NonNull final String from, @NonNull final String to, @NonNull final String message ) {
+        messageService.save(new Message( from, to, message ));
+        messageService.save(new Message( to, from, message ));
+    }
+
+    // Business logic
+    public List<RecordMessage> getMessageForChannel( final String channel ) {
+        return messageService.getMessageForChannel(channel)
+                .stream().map( m -> RecordMessage.messageFrom(m))
+                .collect(Collectors.toList());
+    }
+
+    public void recordNewMessageFor(@NonNull final String channel, @NonNull final String from, @NonNull final String to, @NonNull final String message) {
+        messageService.save(new Message( channel, from, to, message ));
     }
 }
